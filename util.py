@@ -1,5 +1,4 @@
-import os
-import sys
+import io
 import re
 import fileinput
 # to read each line from each file in a dir
@@ -8,12 +7,17 @@ import fileinput
 import codecs # for dealing with unicode
 import gensim
 
-def preprocess_text(file):
+# def read_dir:
+
+
+def preprocess_text(path_prefix, file):
+    path = path_prefix + file
     start_re = re.compile(r'\*\*\*.+\*\*\*')
     end_re = re.compile(r'End\sof\sProject\sGutenberg', re.IGNORECASE)
     blocks = []
     go = False
-    for line in fileinput.input(file):
+    finput = fileinput.FileInput(path)
+    for line in finput:
         if end_re.search(line):
             content = u'\n\n'.join(blocks[1:])
             return content
@@ -27,8 +31,17 @@ def preprocess_text(file):
 
 def write_text(stripped_text, filename):
     writeable = codecs.open(filename + ".txt","w", "utf-8")
-    writeable.write(str(stripped_text))
+    out = stripped_text
+    writeable.write(out)
     writeable.close()
+        # # writeable.write(stripped_text.encode('utf-8').strip())
 
-def tokenize(text):
-    return [token for token in simple_preprocess(text) if token not in STOPWORDS]
+def make_tokens(file_list):
+    def tokenize(text):
+        return [token for token in simple_preprocess(text) if token not in STOPWORDS]
+    tokens = []
+    for path in file_list:
+        graphs = preprocess_text(path)
+        for n in graphs:
+            tokens.append(tokenize(n))
+    return tokens

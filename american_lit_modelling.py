@@ -22,4 +22,12 @@ import fileinput
 
 import util
 
-util.write_text(util.preprocess_text('./corpus/crane-red-badge.txt'), 'write')
+# util.write_text(util.preprocess_text('./corpus/crane-red-badge.txt'), 'write')
+corpus = os.listdir('./corpus')
+for work in corpus:
+    prepped = util.preprocess_text('./corpus/', work)
+    if prepped:
+        print prepped
+        util.write_text(prepped, 'prepped')
+# tokens = util.make_tokens(['./corpus/crane-red-badge.txt'])
+# print tokens
