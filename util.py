@@ -1,6 +1,7 @@
 import io
 import re
 import fileinput
+import os
 # to read each line from each file in a dir
 # for line in fileinput.input(file):
 
@@ -12,6 +13,13 @@ from gensim.parsing.preprocessing import STOPWORDS
 
 # def read_dir:
 
+def iter_corpus(directory):
+    corpus = os.listdir(directory)
+    for work in corpus:
+        if not directory.endswith('/'):
+            directory += '/'
+        full_path = directory + work
+        yield preprocess_text(full_path)
 
 def preprocess_text(file):
     start_re = re.compile(r'\*\*\*.+\*\*\*')
@@ -37,7 +45,3 @@ def write_text(stripped_text, filename):
     writeable.write(out)
     writeable.close()
         # # writeable.write(stripped_text.encode('utf-8').strip())
-
-
-def tokenize(text):
-    return [token for token in simple_preprocess(text) if token not in STOPWORDS]

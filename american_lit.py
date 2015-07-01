@@ -23,29 +23,23 @@ import fileinput
 
 import util
 
-# util.write_text(util.preprocess_text('./corpus/crane-red-badge.txt'), 'write')
-
-def iter_corpus(directory):
-    corpus = os.listdir(directory)
-    for work in corpus:
-        if not directory.endswith('/'):
-            directory += '/'
-        full_path = directory + work
-        yield util.preprocess_text(full_path)
-
 class LitCorpus(object):
     def __init__(self, fname):
         self.fname = fname
 
     def __iter__(self):
-        for text in iter_corpus(self.fname):
+        for text in util.iter_corpus(self.fname):
             # tokenize each message; simply lowercase & match alphabetic chars, for now
-            # yield list(gensim.utils.tokenize(text, lower=True))
             yield self.tokenize(text)
+            # yield self.lemmatize(text)
 
-    def tokenize(self, text):
+    def lemmatize(self, text):
         """Break text into a list of lemmatized words."""
         return gensim.utils.lemmatize(text)
+
+    def tokenize(self, text):
+        return [token for token in simple_preprocess(text) if token not in STOPWORDS]
+
 
 tokenized_corpus = LitCorpus('./corpus')
 print(list(itertools.islice(tokenized_corpus, 2)))
