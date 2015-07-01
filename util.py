@@ -5,24 +5,26 @@ import fileinput
 # for line in fileinput.input(file):
 
 import codecs # for dealing with unicode
+
 import gensim
+from gensim.utils import smart_open, simple_preprocess
+from gensim.parsing.preprocessing import STOPWORDS
 
 # def read_dir:
 
 
-def preprocess_text(path_prefix, file):
-    path = path_prefix + file
+def preprocess_text(file):
     start_re = re.compile(r'\*\*\*.+\*\*\*')
-    end_re = re.compile(r'End\sof\sProject\sGutenberg', re.IGNORECASE)
+    end_re = re.compile(r'End.+Gutenberg\sEBook', re.IGNORECASE)
     blocks = []
     go = False
-    finput = fileinput.FileInput(path)
+    finput = fileinput.FileInput(file)
     for line in finput:
         if end_re.search(line):
             content = u'\n\n'.join(blocks[1:])
             return content
         if go:
-            if not re.match('Produce', line):
+            if line and not re.match('Produce', line):
                 stripped = gensim.utils.to_unicode(line, 'latin1').strip()
                 blocks += stripped.split(u'\n\n')
         if start_re.search(line):
@@ -36,12 +38,6 @@ def write_text(stripped_text, filename):
     writeable.close()
         # # writeable.write(stripped_text.encode('utf-8').strip())
 
-def make_tokens(file_list):
-    def tokenize(text):
-        return [token for token in simple_preprocess(text) if token not in STOPWORDS]
-    tokens = []
-    for path in file_list:
-        graphs = preprocess_text(path)
-        for n in graphs:
-            tokens.append(tokenize(n))
-    return tokens
+
+def tokenize(text):
+    return [token for token in simple_preprocess(text) if token not in STOPWORDS]
