@@ -17,7 +17,10 @@ import gensim
 from gensim.utils import smart_open, simple_preprocess
 from gensim.parsing.preprocessing import STOPWORDS
 
+names = ['jim', 'angelo', 'marie', 'michael', 'edith', 'joe', 'wilson', 'alice', 'pearl', 'duncan','frederick']
 stops = set(stopwords.words('english'))
+for n in names:
+    stops.add(n)
 
 # def read_dir:
 

@@ -6,6 +6,7 @@ corpus = corpora.MmCorpus('/tmp/am_lit_corpus.mm')
 
 lsi = models.LsiModel.load('/tmp/early_am_model.lsi')
 print(lsi)
+lsi.print_topics()
 
 pynch_bow = corpora.MmCorpus('/tmp/pynchon_vectors.mm')
 pynch_lsi = lsi[pynch_bow] # convert the query to LSI space
@@ -17,4 +18,4 @@ index.save('/tmp/early_am.index')
 
 sims = index[pynch_lsi] # perform a similarity query against the corpus
 sims = sorted(enumerate(sims))
-print(sims) # print (document_number, document_similarity) 2-tuples
+# print(sims) # print (document_number, document_similarity) 2-tuples
