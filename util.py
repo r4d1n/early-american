@@ -5,11 +5,19 @@ import os
 # to read each line from each file in a dir
 # for line in fileinput.input(file):
 
+import logging
+import itertools
 import codecs # for dealing with unicode
+
+from textblob import TextBlob
+
+from nltk.corpus import stopwords
 
 import gensim
 from gensim.utils import smart_open, simple_preprocess
 from gensim.parsing.preprocessing import STOPWORDS
+
+stops = set(stopwords.words('english'))
 
 # def read_dir:
 
@@ -55,4 +63,4 @@ def lemmatize(text):
     return gensim.utils.lemmatize(text)
 
 def tokenize(text):
-    return [token for token in simple_preprocess(text) if token not in STOPWORDS]
+    return [token for token in simple_preprocess(text) if token not in stops]
